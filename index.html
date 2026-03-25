@@ -504,9 +504,10 @@ async function insertRow(story) {
 }
 
 async function updateRow(story) {
+  if (!story._id) throw new Error('updateRow called with no _id — cannot update without a DB id');
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}?id=eq.${story._id}`, {
     method: 'PATCH',
-    headers: sbHeaders(),
+    headers: { ...sbHeaders(), 'Prefer': 'return=minimal' },
     body: JSON.stringify(storyToRow(story))
   });
   if (!res.ok) throw new Error(await res.text());
@@ -573,7 +574,13 @@ async function saveStory() {
   if (saving) return;
   saving = true;
 
+  // Capture _id and idx BEFORE closing modal or mutating anything
+  const isEdit   = editingIdx !== null;
+  const dbId     = isEdit ? stories[editingIdx]._id : null;
+  const savedIdx = isEdit ? editingIdx : null;
+
   const story = {
+    _id:            dbId,
     storyId,
     desc:           document.getElementById('f-desc').value.trim(),
     status:         document.getElementById('f-status').value,
@@ -585,15 +592,15 @@ async function saveStory() {
     staticConstant: toList(document.getElementById('f-static').value),
     remarks:        document.getElementById('f-remarks').value.trim(),
     addedBy:        user,
-    ts:             editingIdx !== null ? (stories[editingIdx].ts || Date.now()) : Date.now(),
+    ts:             isEdit ? (stories[editingIdx].ts || Date.now()) : Date.now(),
   };
 
   closeModal();
 
   try {
-    if (editingIdx !== null) {
-      story._id = stories[editingIdx]._id;
-      stories[editingIdx] = story;
+    if (isEdit) {
+      // PATCH existing record by its DB id
+      stories[savedIdx] = story;
       render();
       await updateRow(story);
       toast('Story updated!');
@@ -607,7 +614,7 @@ async function saveStory() {
   } catch(e) {
     toast('Save failed. Check console.');
     console.error(e);
-    loadData(); // re-sync on error
+    loadData();
   }
   saving = false;
 }
