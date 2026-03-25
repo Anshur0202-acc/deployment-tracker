@@ -683,7 +683,7 @@ function renderStepsContent(steps) {
   if (!list.length || !hasNonEmptySteps(list)) return '<div class="step-empty">No steps added.</div>';
   return list.map(item => {
     if (item === '---') return '<div class="item-sep"></div>';
-    return '<div class="step-empty">🚫 No deployment steps added</div>';
+    return `<div class="step-empty">🚫 No deployment steps added</div>`;
   }).join('');
 }
 
