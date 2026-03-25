@@ -316,8 +316,8 @@
           <button type="button" class="btn steps-toggle-btn" id="steps-toggle-post" onclick="setStepsMode('post')">Post-Deployment</button>
         </div>
         <div class="form-hint" style="margin-top:2px;">One step per line. Blank line = visual section break.</div>
-        <textarea id="f-presteps" rows="5" class="steps-textarea" placeholder="Step 1&#10;Step 2&#10;&#10;Next section"></textarea>
-        <textarea id="f-poststeps" rows="5" class="steps-textarea hidden" placeholder="Step 1&#10;Step 2&#10;&#10;Next section"></textarea>
+       <textarea id="f-presteps" rows="5" class="steps-textarea" placeholder="Pre-Deployment Steps:></textarea>
+       <textarea id="f-poststeps" rows="5" class="steps-textarea hidden" placeholder="Post-Deployment Steps:></textarea>
       </div>
     </div>
     <div class="form-err" id="form-err">Please fill in your name and Story ID.</div>
@@ -486,8 +486,8 @@ function render() {
           const postOk = hasNonEmptySteps(s.postDeployment);
           if (!preOk && !postOk) return '';
           const buttons = [
-            preOk  ? `<button class="btn btn-steps" onclick="openStepsModal('pre',${origIdx})">Pre-Deployment</button>` : '',
-            postOk ? `<button class="btn btn-steps" onclick="openStepsModal('post',${origIdx})">Post-Deployment</button>` : '',
+            preOk  ? `<button class="btn btn-steps" onclick="openStepsModal('pre',${origIdx})">⚙️ Pre</button>` : '',
+            postOk ? `<button class="btn btn-steps" onclick="openStepsModal('post',${origIdx})">🚀 Post</button>` : '',
           ].filter(Boolean).join('');
           return `<div class="steps-btn-row">${buttons}</div>`;
         })()}
@@ -683,7 +683,7 @@ function renderStepsContent(steps) {
   if (!list.length || !hasNonEmptySteps(list)) return '<div class="step-empty">No steps added.</div>';
   return list.map(item => {
     if (item === '---') return '<div class="item-sep"></div>';
-    return `<div class="step-line">${item}</div>`;
+    return '<div class="step-empty">🚫 No deployment steps added</div>';
   }).join('');
 }
 
