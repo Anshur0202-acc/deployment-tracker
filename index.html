@@ -487,12 +487,18 @@ function storyToRow(story) {
 }
 
 async function insertRow(story) {
+  const payload = storyToRow(story);
+  // ts is int8 in Supabase — send as integer milliseconds
+  payload.ts = Math.floor(Date.now());
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}`, {
     method: 'POST',
-    headers: sbHeaders(),
-    body: JSON.stringify(storyToRow(story))
+    headers: { ...sbHeaders(), 'Prefer': 'return=representation' },
+    body: JSON.stringify(payload)
   });
-  if (!res.ok) throw new Error(await res.text());
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(err);
+  }
   const data = await res.json();
   return Array.isArray(data) ? data[0] : data;
 }
