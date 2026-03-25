@@ -78,13 +78,16 @@
   td { padding: 11px 14px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: middle; word-break: break-word; }
   tbody tr:last-child td { border-bottom: none; }
   tbody tr:hover td { background: #fafaf8; }
-  th:nth-child(1) { width: 13%; }
-  th:nth-child(2) { width: 25%; }
-  th:nth-child(3) { width: 14%; }
-  th:nth-child(4) { width: 13%; }
-  th:nth-child(5) { width: 16%; }
-  th:nth-child(6) { width: 13%; }
-  th:nth-child(7) { width: 6%; }
+  th:nth-child(1) { width: 10%; }
+  th:nth-child(2) { width: 15%; }
+  th:nth-child(3) { width: 10%; }
+  th:nth-child(4) { width: 9%; }
+  th:nth-child(5) { width: 11%; }
+  th:nth-child(6) { width: 11%; }
+  th:nth-child(7) { width: 11%; }
+  th:nth-child(8) { width: 11%; }
+  th:nth-child(9) { width: 9%; }
+  th:nth-child(10) { width: 3%; }
 
   .badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 20px; }
   .badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: 0.7; }
@@ -131,7 +134,10 @@
     .stats-row { grid-template-columns: repeat(2, 1fr); }
     .topbar { padding: 0 1rem; }
     .main { padding: 1rem; }
-    th:nth-child(6), td:nth-child(6) { display: none; }
+    th:nth-child(6), td:nth-child(6),
+    th:nth-child(7), td:nth-child(7),
+    th:nth-child(8), td:nth-child(8),
+    th:nth-child(9), td:nth-child(9) { display: none; }
   }
 </style>
 </head>
@@ -230,6 +236,9 @@
             <th>Status</th>
             <th>Target date</th>
             <th>Owner</th>
+            <th>Components</th>
+            <th>Test class</th>
+            <th>Static constant</th>
             <th>Added by</th>
             <th></th>
           </tr>
@@ -263,6 +272,10 @@
       <div class="form-row full"><label>Description</label><input type="text" id="f-desc" placeholder="Short description of the change" /></div>
       <div class="form-row"><label>Target deploy date</label><input type="date" id="f-date" /></div>
       <div class="form-row"><label>Assigned owner</label><input type="text" id="f-owner" placeholder="e.g. Ankita M." /></div>
+      <div class="form-row full"><label>Components name</label><input type="text" id="f-components" placeholder="e.g. PaymentService, UserController" /></div>
+      <div class="form-row full"><label>Test class name</label><input type="text" id="f-testclass" placeholder="e.g. PaymentServiceTest" /></div>
+      <div class="form-row full"><label>Static constant</label><input type="text" id="f-static" placeholder="e.g. MAX_RETRY_COUNT" /></div>
+      <div class="form-row full"><label>Remarks</label><input type="text" id="f-remarks" placeholder="Any additional notes or remarks" /></div>
     </div>
     <div class="form-err" id="form-err">Please fill in your name and Story ID.</div>
     <div class="modal-actions">
@@ -336,7 +349,10 @@ function render() {
         <td><span class="badge ${statusClass(s.status)}">${s.status}</span></td>
         <td style="font-size:13px;color:var(--text-muted)">${fmtDate(s.date)}</td>
         <td><div class="owner-cell"><span class="avatar" style="${avatarStyle(s.owner)}">${initials(s.owner)}</span><span style="font-size:13px">${s.owner||'—'}</span></div></td>
-        <td style="font-size:12px;color:var(--text-faint)">${s.addedBy||'—'}</td>
+        <td style="font-size:12px;color:var(--text-muted)">${s.components||'—'}</td>
+        <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text-muted)">${s.testClass||'—'}</td>
+        <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text-muted)">${s.staticConstant||'—'}</td>
+        <td style="font-size:12px;color:var(--text-faint)">${s.addedBy||'—'}${s.remarks ? `<br><span style="color:var(--text-faint);font-style:italic">${s.remarks}</span>` : ''}</td>
         <td><button class="del-btn" onclick="deleteStory(${stories.indexOf(s)})" title="Delete">×</button></td>
       </tr>`).join('');
   }
@@ -376,7 +392,7 @@ function openModal() { document.getElementById('modal').classList.add('open'); }
 function closeModal() {
   document.getElementById('modal').classList.remove('open');
   document.getElementById('form-err').style.display='none';
-  ['f-user','f-id','f-desc','f-owner','f-date'].forEach(id=>document.getElementById(id).value='');
+  ['f-user','f-id','f-desc','f-owner','f-date','f-components','f-testclass','f-static','f-remarks'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-status').value='Pending';
 }
 
@@ -392,6 +408,10 @@ async function saveStory() {
     status: document.getElementById('f-status').value,
     date: document.getElementById('f-date').value,
     owner: document.getElementById('f-owner').value.trim(),
+    components: document.getElementById('f-components').value.trim(),
+    testClass: document.getElementById('f-testclass').value.trim(),
+    staticConstant: document.getElementById('f-static').value.trim(),
+    remarks: document.getElementById('f-remarks').value.trim(),
     addedBy: user,
     ts: Date.now()
   };
