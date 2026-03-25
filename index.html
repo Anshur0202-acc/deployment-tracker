@@ -67,6 +67,7 @@
   tbody tr.row-p2 td { background: #fff8f8; }
   tbody tr.row-p2:hover td { background: #fff0f0; }
 
+  .col-serial  { width: 52px; text-align: center; }
   .col-id      { width: 85px; }
   .col-prio    { width: 70px; }
   .col-desc    { width: 165px; }
@@ -100,7 +101,8 @@
   }
   th:last-child .col-resizer { display: none; }
 
-  .badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 20px; white-space: nowrap; }
+  .serial-badge { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: var(--text); color: white; font-size: 11px; font-weight: 700; font-family: 'DM Mono', monospace; flex-shrink: 0; }
+  .serial-badge.unset { background: var(--border); color: var(--text-faint); } align-items: center; gap: 5px; font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 20px; white-space: nowrap; }
   .badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: 0.7; flex-shrink: 0; }
   .badge-pending    { background: #fef3cd; color: #92600a; }
   .badge-deployed   { background: #d4edda; color: #1e6e34; }
@@ -223,6 +225,7 @@
       <table>
         <thead>
           <tr>
+            <th class="col-serial">#<div class="col-resizer"></div></th>
             <th class="col-id">Story ID<div class="col-resizer"></div></th>
             <th class="col-prio">Priority<div class="col-resizer"></div></th>
             <th class="col-desc">Description<div class="col-resizer"></div></th>
@@ -258,6 +261,7 @@
     <div class="form-grid">
       <div class="form-row"><label>Your name *</label><input type="text" id="f-user" placeholder="e.g. Shibin S." /></div>
       <div class="form-row"><label>Story ID / Ticket # *</label><input type="text" id="f-id" placeholder="PROJ-1234" /></div>
+      <div class="form-row"><label>Deploy Order #</label><input type="number" id="f-order" placeholder="e.g. 1, 2, 3…" min="1" /><div class="form-hint">Deployment sequence number — lower = deploy first</div></div>
       <div class="form-row"><label>Status</label>
         <select id="f-status">
           <option>Pending</option>
@@ -375,6 +379,11 @@ function prioBadge(p) {
 
 function sortByPriority(list) {
   return [...list].sort((a,b) => {
+    // Deploy order takes top priority — nulls go to the bottom
+    const oa = a.deployOrder != null ? a.deployOrder : Infinity;
+    const ob = b.deployOrder != null ? b.deployOrder : Infinity;
+    if (oa !== ob) return oa - ob;
+    // Fallback: sort by priority then recency
     const pa = PRIORITY_ORDER[a.priority] ?? 2;
     const pb = PRIORITY_ORDER[b.priority] ?? 2;
     if (pa !== pb) return pa - pb;
@@ -413,6 +422,7 @@ function render() {
     const canDeploy = s.status === 'In Progress';
     return `
     <tr class="${rowCls}">
+      <td class="col-serial" style="text-align:center;padding-top:11px;">${s.deployOrder != null ? `<span class="serial-badge">${s.deployOrder}</span>` : `<span class="serial-badge unset">—</span>`}</td>
       <td class="col-id" style="font-family:'DM Mono',monospace;font-size:12px;font-weight:500;padding-top:12px;">${s.storyId||'—'}</td>
       <td class="col-prio" style="padding-top:11px;">${prioBadge(prio)}</td>
       <td class="col-desc" style="font-size:13px;color:var(--text-muted);padding-top:12px;">${s.desc||'—'}</td>
@@ -476,6 +486,7 @@ async function loadData() {
       priority:       r.priority,
       date:           r.date,
       owner:          r.owner,
+      deployOrder:    r.deployOrder != null ? r.deployOrder : null,
       components:     r.components   || [],
       testClass:      r.testClass    || [],
       staticConstant: r.staticConstant || [],
@@ -499,6 +510,7 @@ function storyToRow(story) {
     priority:       story.priority,
     date:           story.date || null,
     owner:          story.owner,
+    deployOrder:    story.deployOrder != null ? story.deployOrder : null,
     components:     story.components,
     testClass:      story.testClass,
     staticConstant: story.staticConstant,
@@ -545,7 +557,7 @@ async function deleteRow(story) {
 
 /* ── Modal helpers ────────────────────────────────────── */
 function resetForm() {
-  ['f-user','f-id','f-desc','f-owner','f-date','f-remarks','f-components','f-testclass','f-static']
+  ['f-user','f-id','f-order','f-desc','f-owner','f-date','f-remarks','f-components','f-testclass','f-static']
     .forEach(id => document.getElementById(id).value = '');
   document.getElementById('f-status').value   = 'Pending';
   document.getElementById('f-priority').value = 'P3';
@@ -567,6 +579,7 @@ function openEditModal(idx) {
   resetForm();
   document.getElementById('f-user').value       = s.addedBy || '';
   document.getElementById('f-id').value         = s.storyId || '';
+  document.getElementById('f-order').value      = s.deployOrder != null ? s.deployOrder : '';
   document.getElementById('f-desc').value       = s.desc || '';
   document.getElementById('f-status').value     = s.status || 'Pending';
   document.getElementById('f-priority').value   = s.priority || 'P3';
@@ -609,6 +622,7 @@ async function saveStory() {
     priority:       document.getElementById('f-priority').value,
     date:           document.getElementById('f-date').value || null,
     owner:          document.getElementById('f-owner').value.trim(),
+    deployOrder:    document.getElementById('f-order').value !== '' ? parseInt(document.getElementById('f-order').value) : null,
     components:     toList(document.getElementById('f-components').value),
     testClass:      toList(document.getElementById('f-testclass').value),
     staticConstant: toList(document.getElementById('f-static').value),
@@ -723,4 +737,3 @@ window.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
-
