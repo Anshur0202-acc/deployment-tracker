@@ -75,10 +75,30 @@
   .col-owner   { width: 110px; }
   .col-comp    { width: 175px; }
   .col-test    { width: 165px; }
-  .col-static  { width: 180px; }  /* ← fixed: was 280px */
+  .col-static  { width: 180px; }
   .col-addedby { width: 88px; }
   .col-remarks { width: 140px; }
   .col-actions { width: 62px; }
+
+  /* ── Resizable columns ── */
+  table { table-layout: fixed; }
+  th { position: relative; overflow: visible; }
+  th .col-resizer {
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 5px;
+    cursor: col-resize;
+    user-select: none;
+    z-index: 2;
+    border-right: 2px solid transparent;
+    transition: border-color 0.12s;
+  }
+  th .col-resizer:hover,
+  th .col-resizer.resizing {
+    border-right: 2px solid #1a5276;
+    background: rgba(26,82,118,0.07);
+  }
+  th:last-child .col-resizer { display: none; }
 
   .badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 20px; white-space: nowrap; }
   .badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: 0.7; flex-shrink: 0; }
@@ -201,18 +221,18 @@
       <table>
         <thead>
           <tr>
-            <th class="col-id">Story ID</th>
-            <th class="col-prio">Priority</th>
-            <th class="col-desc">Description</th>
-            <th class="col-status">Status</th>
-            <th class="col-date">Target date</th>
-            <th class="col-owner">Owner</th>
-            <th class="col-comp">Components</th>
-            <th class="col-test">Test classes</th>
-            <th class="col-static">Static constants</th>
-            <th class="col-addedby">Added by</th>
-            <th class="col-remarks">Remarks</th>
-            <th class="col-actions"></th>
+            <th class="col-id">Story ID<div class="col-resizer"></div></th>
+            <th class="col-prio">Priority<div class="col-resizer"></div></th>
+            <th class="col-desc">Description<div class="col-resizer"></div></th>
+            <th class="col-status">Status<div class="col-resizer"></div></th>
+            <th class="col-date">Target date<div class="col-resizer"></div></th>
+            <th class="col-owner">Owner<div class="col-resizer"></div></th>
+            <th class="col-comp">Components<div class="col-resizer"></div></th>
+            <th class="col-test">Test classes<div class="col-resizer"></div></th>
+            <th class="col-static">Static constants<div class="col-resizer"></div></th>
+            <th class="col-addedby">Added by<div class="col-resizer"></div></th>
+            <th class="col-remarks">Remarks<div class="col-resizer"></div></th>
+            <th class="col-actions"><div class="col-resizer"></div></th>
           </tr>
         </thead>
         <tbody id="story-tbody"></tbody>
@@ -644,8 +664,60 @@ function setPriorityFilter(f, btn) {
   render();
 }
 
-/* ── Boot ─────────────────────────────────────────────── */
-window.addEventListener('DOMContentLoaded', () => loadData());
+/* ── Resizable columns ───────────────────────────────── */
+function initResizableColumns() {
+  const table = document.querySelector('table');
+  if (!table) return;
+
+  document.querySelectorAll('th .col-resizer').forEach(resizer => {
+    const th = resizer.parentElement;
+    let startX, startWidth;
+
+    resizer.addEventListener('mousedown', e => {
+      startX     = e.clientX;
+      startWidth = th.offsetWidth;
+      resizer.classList.add('resizing');
+
+      // Prevent text selection while dragging
+      document.body.style.userSelect = 'none';
+      document.body.style.cursor     = 'col-resize';
+
+      function onMouseMove(e) {
+        const diff = e.clientX - startX;
+        const newW = Math.max(40, startWidth + diff);
+        th.style.width = newW + 'px';
+        // Also update min-width so table doesn't collapse
+        th.style.minWidth = newW + 'px';
+      }
+
+      function onMouseUp() {
+        resizer.classList.remove('resizing');
+        document.body.style.userSelect = '';
+        document.body.style.cursor     = '';
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup',   onMouseUp);
+      }
+
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup',   onMouseUp);
+    });
+
+    // Double-click resets column to its default CSS width
+    resizer.addEventListener('dblclick', () => {
+      th.style.width    = '';
+      th.style.minWidth = '';
+    });
+  });
+}
+
+// Re-init after every render (thead stays static so only needed once, but safe to guard)
+const _origRender = render;
+window.addEventListener('DOMContentLoaded', () => {
+  loadData();
+  // Small delay to ensure thead is in DOM
+  setTimeout(initResizableColumns, 100);
+});
+
 </script>
 </body>
 </html>
