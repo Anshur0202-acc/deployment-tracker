@@ -102,7 +102,7 @@
   th:last-child .col-resizer { display: none; }
 
   .serial-badge { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: var(--text); color: white; font-size: 11px; font-weight: 700; font-family: 'DM Mono', monospace; flex-shrink: 0; }
-  .serial-badge.unset { background: var(--border); color: var(--text-faint); } align-items: center; gap: 5px; font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 20px; white-space: nowrap; }
+  .serial-badge.unset { background: var(--border); color: var(--text-faint); }
   .badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: 0.7; flex-shrink: 0; }
   .badge-pending    { background: #fef3cd; color: #92600a; }
   .badge-deployed   { background: #d4edda; color: #1e6e34; }
@@ -161,6 +161,16 @@
   input, select, textarea { font-family: 'DM Sans', sans-serif; font-size: 14px; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); color: var(--text); outline: none; transition: border 0.15s; }
   input:focus, select:focus, textarea:focus { border-color: var(--text); }
   textarea { resize: vertical; line-height: 1.5; }
+
+  .hidden { display: none; }
+  .steps-toggle-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+  .steps-toggle-btn { padding: 6px 12px; font-size: 13px; }
+  .steps-toggle-btn.active { background: var(--text); color: white; border-color: var(--text); }
+  .steps-btn-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .btn-steps { padding: 4px 10px; font-size: 12px; border-radius: 999px; }
+  .steps-modal-body { display: flex; flex-direction: column; gap: 10px; padding-right: 6px; }
+  .step-line { font-family: 'DM Mono', monospace; font-size: 13px; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: #fafaf8; white-space: pre-wrap; }
+  .step-empty { color: var(--text-faint); font-size: 14px; padding-top: 10px; }
 
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(60px); background: var(--text); color: white; font-size: 13px; padding: 10px 18px; border-radius: var(--radius-sm); opacity: 0; transition: all 0.25s; z-index: 200; white-space: nowrap; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -228,7 +238,7 @@
             <th class="col-serial">#<div class="col-resizer"></div></th>
             <th class="col-id">Story ID<div class="col-resizer"></div></th>
             <th class="col-prio">Priority<div class="col-resizer"></div></th>
-            <th class="col-desc">Desc/ChangeSet<div class="col-resizer"></div></th>
+            <th class="col-desc">Description<div class="col-resizer"></div></th>
             <th class="col-status">Status<div class="col-resizer"></div></th>
             <th class="col-date">Target date<div class="col-resizer"></div></th>
             <th class="col-owner">Owner<div class="col-resizer"></div></th>
@@ -298,11 +308,36 @@
         <div class="form-hint">One constant per line</div>
       </div>
       <div class="form-row full"><label>Remarks</label><input type="text" id="f-remarks" placeholder="Any additional notes or deployment instructions" /></div>
+
+      <div class="form-row full">
+        <label>Deployment steps</label>
+        <div class="steps-toggle-row">
+          <button type="button" class="btn steps-toggle-btn active" id="steps-toggle-pre" onclick="setStepsMode('pre')">Pre-Deployment</button>
+          <button type="button" class="btn steps-toggle-btn" id="steps-toggle-post" onclick="setStepsMode('post')">Post-Deployment</button>
+        </div>
+        <div class="form-hint" style="margin-top:2px;">One step per line. Blank line = visual section break.</div>
+        <textarea id="f-presteps" rows="5" class="steps-textarea" placeholder="Step 1&#10;Step 2&#10;&#10;Next section"></textarea>
+        <textarea id="f-poststeps" rows="5" class="steps-textarea hidden" placeholder="Step 1&#10;Step 2&#10;&#10;Next section"></textarea>
+      </div>
     </div>
     <div class="form-err" id="form-err">Please fill in your name and Story ID.</div>
     <div class="modal-actions">
       <button class="btn" onclick="closeModal()">Cancel</button>
       <button class="btn btn-primary" id="modal-save-btn" onclick="saveStory()">Save story</button>
+    </div>
+  </div>
+</div>
+
+<!-- STEPS VIEW MODAL -->
+<div class="modal-backdrop" id="steps-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="steps-modal-title">Deployment steps</div>
+      <div class="modal-subtitle" id="steps-modal-subtitle"></div>
+    </div>
+    <div id="steps-modal-body" class="steps-modal-body"></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeStepsModal()">Close</button>
     </div>
   </div>
 </div>
@@ -327,6 +362,7 @@ function sbHeaders() {
 /* ── State ────────────────────────────────────────────── */
 let stories = [], activeFilter = 'All', activePriorityFilter = 'All';
 let saving = false, editingIdx = null;
+let stepsMode = 'pre';
 const PRIORITY_ORDER = { P1:0, P2:1, P3:2, P4:3, P5:4 };
 const AV_COLORS = [
   ['#dbeafe','#1d4ed8'],['#dcfce7','#15803d'],['#fef3c7','#b45309'],
@@ -359,6 +395,11 @@ function toListRaw(val) {
   if (!val) return '';
   if (!Array.isArray(val)) return val;
   return val.map(s => s === '---' ? '' : s).join('\n');
+}
+
+function hasNonEmptySteps(list) {
+  const arr = Array.isArray(list) ? list : (list ? toList(list) : []);
+  return arr.some(x => x && x !== '---');
 }
 
 function renderPills(items, cls) {
@@ -438,7 +479,19 @@ function render() {
       <td class="col-test">${renderPills(s.testClass,'item-pill-green')}</td>
       <td class="col-static">${renderPills(s.staticConstant,'item-pill-amber')}</td>
       <td class="col-addedby" style="font-size:12px;color:var(--text-faint);padding-top:12px;">${s.addedBy||'—'}</td>
-      <td class="col-remarks" style="font-size:12px;color:var(--text-muted);font-style:italic;padding-top:12px;">${s.remarks||'—'}</td>
+      <td class="col-remarks" style="padding-top:12px;">
+        <div style="font-size:12px;color:var(--text-muted);font-style:italic;">${s.remarks||'—'}</div>
+        ${(() => {
+          const preOk = hasNonEmptySteps(s.preDeployment);
+          const postOk = hasNonEmptySteps(s.postDeployment);
+          if (!preOk && !postOk) return '';
+          const buttons = [
+            preOk  ? `<button class="btn btn-steps" onclick="openStepsModal('pre',${origIdx})">Pre-Deployment</button>` : '',
+            postOk ? `<button class="btn btn-steps" onclick="openStepsModal('post',${origIdx})">Post-Deployment</button>` : '',
+          ].filter(Boolean).join('');
+          return `<div class="steps-btn-row">${buttons}</div>`;
+        })()}
+      </td>
       <td class="col-actions">
         <div class="action-cell">
           <button class="btn-edit" onclick="openEditModal(${origIdx})" title="Edit">&#9998;</button>
@@ -490,6 +543,8 @@ async function loadData() {
       components:     r.components   || [],
       testClass:      r.testClass    || [],
       staticConstant: r.staticConstant || [],
+      preDeployment:  r.preDeployment  || [],
+      postDeployment: r.postDeployment || [],
       remarks:        r.remarks,
       addedBy:        r.addedBy,
       ts:             r.ts,
@@ -514,6 +569,8 @@ function storyToRow(story) {
     components:     story.components,
     testClass:      story.testClass,
     staticConstant: story.staticConstant,
+    preDeployment:  story.preDeployment || [],
+    postDeployment: story.postDeployment || [],
     remarks:        story.remarks,
     addedBy:        story.addedBy,
     ts:             story.ts,
@@ -556,12 +613,26 @@ async function deleteRow(story) {
 }
 
 /* ── Modal helpers ────────────────────────────────────── */
+function setStepsMode(mode) {
+  stepsMode = mode;
+  const isPre = mode === 'pre';
+  const preEl = document.getElementById('f-presteps');
+  const postEl = document.getElementById('f-poststeps');
+  const preBtn = document.getElementById('steps-toggle-pre');
+  const postBtn = document.getElementById('steps-toggle-post');
+  if (preEl) preEl.classList.toggle('hidden', !isPre);
+  if (postEl) postEl.classList.toggle('hidden', isPre);
+  if (preBtn) preBtn.classList.toggle('active', isPre);
+  if (postBtn) postBtn.classList.toggle('active', !isPre);
+}
+
 function resetForm() {
-  ['f-user','f-id','f-order','f-desc','f-owner','f-date','f-remarks','f-components','f-testclass','f-static']
+  ['f-user','f-id','f-order','f-desc','f-owner','f-date','f-remarks','f-components','f-testclass','f-static','f-presteps','f-poststeps']
     .forEach(id => document.getElementById(id).value = '');
   document.getElementById('f-status').value   = 'Pending';
   document.getElementById('f-priority').value = 'P3';
   document.getElementById('form-err').style.display = 'none';
+  setStepsMode('pre');
 }
 
 function openAddModal() {
@@ -588,17 +659,46 @@ function openEditModal(idx) {
   document.getElementById('f-components').value = toListRaw(s.components);
   document.getElementById('f-testclass').value  = toListRaw(s.testClass);
   document.getElementById('f-static').value     = toListRaw(s.staticConstant);
+  document.getElementById('f-presteps').value  = toListRaw(s.preDeployment);
+  document.getElementById('f-poststeps').value = toListRaw(s.postDeployment);
   document.getElementById('f-remarks').value    = s.remarks || '';
   document.getElementById('modal-title').textContent    = 'Edit story';
   document.getElementById('modal-subtitle').textContent = s.storyId || '';
   document.getElementById('modal-save-btn').textContent = 'Update story';
   document.getElementById('modal').classList.add('open');
+
+  // If only post steps exist, show the post textarea by default.
+  if (hasNonEmptySteps(s.postDeployment) && !hasNonEmptySteps(s.preDeployment)) setStepsMode('post');
+  else setStepsMode('pre');
 }
 
 function closeModal() {
   document.getElementById('modal').classList.remove('open');
   editingIdx = null;
   resetForm();
+}
+
+function renderStepsContent(steps) {
+  const list = Array.isArray(steps) ? steps : toList(steps);
+  if (!list.length || !hasNonEmptySteps(list)) return '<div class="step-empty">No steps added.</div>';
+  return list.map(item => {
+    if (item === '---') return '<div class="item-sep"></div>';
+    return `<div class="step-line">${item}</div>`;
+  }).join('');
+}
+
+function openStepsModal(kind, idx) {
+  const s = stories[idx];
+  const isPre = kind === 'pre';
+  const steps = isPre ? s.preDeployment : s.postDeployment;
+  document.getElementById('steps-modal-title').textContent = isPre ? 'Pre-Deployment Steps' : 'Post-Deployment Steps';
+  document.getElementById('steps-modal-subtitle').textContent = s.storyId ? `Story: ${s.storyId}` : '';
+  document.getElementById('steps-modal-body').innerHTML = renderStepsContent(steps);
+  document.getElementById('steps-modal').classList.add('open');
+}
+
+function closeStepsModal() {
+  document.getElementById('steps-modal').classList.remove('open');
 }
 
 /* ── Save (add or update) ─────────────────────────────── */
@@ -626,6 +726,8 @@ async function saveStory() {
     components:     toList(document.getElementById('f-components').value),
     testClass:      toList(document.getElementById('f-testclass').value),
     staticConstant: toList(document.getElementById('f-static').value),
+    preDeployment:  toList(document.getElementById('f-presteps').value),
+    postDeployment: toList(document.getElementById('f-poststeps').value),
     remarks:        document.getElementById('f-remarks').value.trim(),
     addedBy:        user,
     ts:             isEdit ? (stories[editingIdx].ts || Date.now()) : Date.now(),
@@ -732,6 +834,24 @@ window.addEventListener('DOMContentLoaded', () => {
   loadData();
   // Small delay to ensure thead is in DOM
   setTimeout(initResizableColumns, 100);
+
+  // Close modals when clicking on their backdrop
+  ['modal','steps-modal'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('click', e => {
+      if (e.target !== el) return;
+      if (id === 'modal') closeModal();
+      else closeStepsModal();
+    });
+  });
+
+  // ESC closes whichever modal is open
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    if (document.getElementById('modal')?.classList.contains('open')) closeModal();
+    if (document.getElementById('steps-modal')?.classList.contains('open')) closeStepsModal();
+  });
 });
 
 </script>
