@@ -31,6 +31,8 @@
   .btn:hover { background: var(--bg); }
   .btn-primary { background: var(--text); color: white; border-color: var(--text); }
   .btn-primary:hover { opacity: 0.88; background: var(--text); }
+  .btn-deploy { font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; background: #1e6e34; color: white; border: none; border-radius: 5px; padding: 4px 9px; cursor: pointer; transition: opacity 0.15s; white-space: nowrap; }
+  .btn-deploy:hover { opacity: 0.82; }
   .btn-icon { width: 34px; height: 34px; padding: 0; display: flex; align-items: center; justify-content: center; }
 
   .main { width: 100%; padding: 1.5rem 2rem; }
@@ -54,7 +56,6 @@
   .stat-label { font-size: 11px; font-weight: 500; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; }
   .stat-val { font-size: 28px; font-weight: 600; letter-spacing: -1px; }
 
-  /* ── Toolbar with two filter rows ── */
   .toolbar { margin-bottom: 1rem; display: flex; flex-direction: column; gap: 8px; }
   .toolbar-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
   .filters { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
@@ -62,36 +63,36 @@
   .filter-pill { font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); cursor: pointer; transition: all 0.12s; }
   .filter-pill:hover { background: var(--bg); }
   .filter-pill.active { background: var(--text); color: white; border-color: var(--text); }
-
-  /* Priority filter pills — coloured when active */
-  .filter-pill.prio-high.active  { background: #c0392b; border-color: #c0392b; color: white; }
-  .filter-pill.prio-medium.active{ background: #e67e22; border-color: #e67e22; color: white; }
-  .filter-pill.prio-low.active   { background: #27ae60; border-color: #27ae60; color: white; }
+  .filter-pill.fp1.active { background: #6a1b9a; border-color: #6a1b9a; color: white; }
+  .filter-pill.fp2.active { background: #c0392b; border-color: #c0392b; color: white; }
+  .filter-pill.fp3.active { background: #e67e22; border-color: #e67e22; color: white; }
+  .filter-pill.fp4.active { background: #2980b9; border-color: #2980b9; color: white; }
+  .filter-pill.fp5.active { background: #27ae60; border-color: #27ae60; color: white; }
 
   .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow-x: auto; }
-  table { width: 100%; min-width: 1400px; border-collapse: collapse; font-size: 13px; }
+  table { width: 100%; min-width: 1460px; border-collapse: collapse; font-size: 13px; }
   thead { background: var(--bg); }
   th { text-align: left; font-size: 11px; font-weight: 600; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.5px; padding: 10px 12px; border-bottom: 1px solid var(--border); white-space: nowrap; }
   td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: top; }
   tbody tr:last-child td { border-bottom: none; }
   tbody tr:hover td { background: #fafaf8; }
-
-  /* High-priority row subtle highlight */
-  tbody tr.prio-high-row td { background: #fff8f8; }
-  tbody tr.prio-high-row:hover td { background: #fff0f0; }
+  tbody tr.row-p1 td { background: #fdf4ff; }
+  tbody tr.row-p1:hover td { background: #f8e8ff; }
+  tbody tr.row-p2 td { background: #fff8f8; }
+  tbody tr.row-p2:hover td { background: #fff0f0; }
 
   .col-id      { width: 85px; }
-  .col-prio    { width: 90px; }
-  .col-desc    { width: 175px; }
-  .col-status  { width: 100px; }
+  .col-prio    { width: 70px; }
+  .col-desc    { width: 165px; }
+  .col-status  { width: 135px; }
   .col-date    { width: 85px; }
   .col-owner   { width: 110px; }
   .col-comp    { width: 185px; }
   .col-test    { width: 175px; }
   .col-static  { width: 175px; }
-  .col-addedby { width: 90px; }
-  .col-remarks { width: 145px; }
-  .col-del     { width: 36px; }
+  .col-addedby { width: 88px; }
+  .col-remarks { width: 140px; }
+  .col-actions { width: 62px; }
 
   .badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 20px; white-space: nowrap; }
   .badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: 0.7; flex-shrink: 0; }
@@ -100,24 +101,31 @@
   .badge-inprogress { background: #d6eaf8; color: #1a5276; }
   .badge-blocked    { background: #fde8e8; color: #9b2020; }
 
-  /* Priority badges */
-  .prio-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 20px; white-space: nowrap; }
-  .prio-badge-high   { background: #fde8e8; color: #9b2020; }
-  .prio-badge-medium { background: #fef3cd; color: #92600a; }
-  .prio-badge-low    { background: #d4edda; color: #1e6e34; }
-  .prio-icon { font-size: 10px; }
+  .prio-badge { display: inline-flex; align-items: center; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; white-space: nowrap; letter-spacing: 0.4px; }
+  .prio-p1 { background: #f3e5f5; color: #6a1b9a; border: 1px solid #ce93d8; }
+  .prio-p2 { background: #fde8e8; color: #9b2020; border: 1px solid #f5b7b1; }
+  .prio-p3 { background: #fef3cd; color: #92600a; border: 1px solid #fad7a0; }
+  .prio-p4 { background: #d6eaf8; color: #1a5276; border: 1px solid #a9cce3; }
+  .prio-p5 { background: #d4edda; color: #1e6e34; border: 1px solid #a9dfb5; }
 
+  .status-cell { display: flex; flex-direction: column; gap: 5px; align-items: flex-start; }
+
+  /* Component group separators */
   .item-list { display: flex; flex-direction: column; gap: 3px; }
   .item-pill { display: block; font-size: 11px; font-family: 'DM Mono', monospace; border-radius: 4px; padding: 3px 7px; line-height: 1.5; word-break: break-all; }
   .item-pill-blue   { background: #eef4ff; border: 1px solid #c7d9f8; color: #1a4a8a; }
   .item-pill-green  { background: #edfbf3; border: 1px solid #b6e8cc; color: #1a6638; }
   .item-pill-amber  { background: #fffbeb; border: 1px solid #fde68a; color: #7c5700; }
+  .item-sep { height: 7px; border-bottom: 1px dashed var(--border); margin-bottom: 2px; }
 
   .avatar { width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 600; margin-right: 6px; flex-shrink: 0; }
   .owner-cell { display: flex; align-items: center; }
 
-  .del-btn { background: none; border: none; cursor: pointer; color: var(--text-faint); font-size: 18px; line-height: 1; padding: 2px 6px; border-radius: 4px; }
-  .del-btn:hover { color: #c0392b; background: #fde8e8; }
+  .action-cell { display: flex; gap: 3px; align-items: center; padding-top: 8px; }
+  .btn-edit { background: none; border: none; cursor: pointer; color: var(--text-faint); font-size: 14px; padding: 3px 5px; border-radius: 4px; line-height: 1; }
+  .btn-edit:hover { color: #1a5276; background: #d6eaf8; }
+  .btn-del  { background: none; border: none; cursor: pointer; color: var(--text-faint); font-size: 18px; line-height: 1; padding: 1px 5px; border-radius: 4px; }
+  .btn-del:hover  { color: #c0392b; background: #fde8e8; }
 
   .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-faint); }
   .empty-state svg { width: 40px; height: 40px; margin-bottom: 12px; opacity: 0.3; display: block; margin-left: auto; margin-right: auto; }
@@ -129,7 +137,9 @@
   .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 100; align-items: flex-start; justify-content: center; padding: 2rem 1rem; overflow-y: auto; }
   .modal-backdrop.open { display: flex; }
   .modal { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 1.75rem; width: 100%; max-width: 560px; box-shadow: var(--shadow-md); margin: auto; }
-  .modal-title { font-size: 17px; font-weight: 600; margin-bottom: 1.25rem; }
+  .modal-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 1.25rem; }
+  .modal-title { font-size: 17px; font-weight: 600; }
+  .modal-subtitle { font-size: 12px; color: var(--text-faint); font-family: 'DM Mono', monospace; }
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .form-grid .full { grid-column: 1 / -1; }
   .form-row label { display: block; font-size: 12px; font-weight: 500; color: var(--text-muted); margin-bottom: 4px; }
@@ -143,7 +153,6 @@
 
   #config-view { display: block; }
   #app-view { display: none; }
-
   @media (max-width: 640px) {
     .stats-row { grid-template-columns: repeat(2, 1fr); }
     .topbar, .main { padding-left: 1rem; padding-right: 1rem; }
@@ -164,7 +173,7 @@
     <button class="btn btn-icon" title="Settings" onclick="showConfig()">
       <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 10.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5zm5.06-1.56a5.07 5.07 0 0 0 .05-.94c0-.32-.03-.63-.08-.93l1.42-1.11-1.5-2.6-1.66.67a5.1 5.1 0 0 0-1.6-.93L9.5 2h-3l-.29 1.1a5.1 5.1 0 0 0-1.6.93l-1.66-.67-1.5 2.6L2.87 7.07a5.22 5.22 0 0 0 0 1.86L1.45 10.04l1.5 2.6 1.66-.67c.49.37 1.03.66 1.6.93L6.5 14h3l.29-1.1a5.1 5.1 0 0 0 1.6-.93l1.66.67 1.5-2.6-1.44-1.1z"/></svg>
     </button>
-    <button class="btn btn-primary" onclick="openModal()">+ Add story</button>
+    <button class="btn btn-primary" onclick="openAddModal()">+ Add story</button>
   </div>
 </div>
 
@@ -176,8 +185,8 @@
       <p>This app uses <strong>JSONBin.io</strong> as a free shared database so your whole team sees the same data.</p>
       <div class="setup-steps">
         <div class="setup-step"><div class="step-num">1</div><div class="step-text">Go to <a href="https://jsonbin.io" target="_blank">jsonbin.io</a> and create a free account.</div></div>
-        <div class="setup-step"><div class="step-num">2</div><div class="step-text">Click <strong>API Keys</strong> → copy your <strong>Secret Key</strong> (starts with <code>$2b$...</code>).</div></div>
-        <div class="setup-step"><div class="step-num">3</div><div class="step-text">Click <strong>Bins → Create Bin</strong>. Paste <code>{"stories":[]}</code> and save. Copy the <strong>Bin ID</strong>.</div></div>
+        <div class="setup-step"><div class="step-num">2</div><div class="step-text">Click <strong>API Keys</strong> &rarr; copy your <strong>Secret Key</strong> (starts with <code>$2b$...</code>).</div></div>
+        <div class="setup-step"><div class="step-num">3</div><div class="step-text">Click <strong>Bins &rarr; Create Bin</strong>. Paste <code>{"stories":[]}</code> and save. Copy the <strong>Bin ID</strong>.</div></div>
         <div class="setup-step"><div class="step-num">4</div><div class="step-text">Paste both below and share the same credentials with your team.</div></div>
       </div>
       <div class="form-row" style="margin-bottom:10px;"><label>JSONBin Secret Key</label><input type="password" id="cfg-key" placeholder="$2b$10$..." /></div>
@@ -200,8 +209,7 @@
     </div>
 
     <div class="toolbar">
-      <!-- Row 1: Status filters + Search -->
-      <div class="toolbar-row">
+      <div class="toolbar-row" id="status-filter-row">
         <div class="filters">
           <span class="filter-label">Status:</span>
           <button class="filter-pill active" onclick="setStatusFilter('All',this)">All</button>
@@ -212,14 +220,15 @@
         </div>
         <input type="text" id="search-input" placeholder="Search..." style="width:200px;font-size:13px;" oninput="render()" />
       </div>
-      <!-- Row 2: Priority filters -->
-      <div class="toolbar-row">
+      <div class="toolbar-row" id="priority-filter-row">
         <div class="filters">
           <span class="filter-label">Priority:</span>
           <button class="filter-pill active" onclick="setPriorityFilter('All',this)">All</button>
-          <button class="filter-pill prio-high" onclick="setPriorityFilter('High',this)">🔴 High</button>
-          <button class="filter-pill prio-medium" onclick="setPriorityFilter('Medium',this)">🟡 Medium</button>
-          <button class="filter-pill prio-low" onclick="setPriorityFilter('Low',this)">🟢 Low</button>
+          <button class="filter-pill fp1" onclick="setPriorityFilter('P1',this)">P1 — Critical</button>
+          <button class="filter-pill fp2" onclick="setPriorityFilter('P2',this)">P2 — High</button>
+          <button class="filter-pill fp3" onclick="setPriorityFilter('P3',this)">P3 — Medium</button>
+          <button class="filter-pill fp4" onclick="setPriorityFilter('P4',this)">P4 — Low</button>
+          <button class="filter-pill fp5" onclick="setPriorityFilter('P5',this)">P5 — Minimal</button>
         </div>
       </div>
     </div>
@@ -239,7 +248,7 @@
             <th class="col-static">Static constants</th>
             <th class="col-addedby">Added by</th>
             <th class="col-remarks">Remarks</th>
-            <th class="col-del"></th>
+            <th class="col-actions"></th>
           </tr>
         </thead>
         <tbody id="story-tbody"></tbody>
@@ -253,21 +262,31 @@
   </div>
 </div>
 
-<!-- MODAL -->
+<!-- ADD / EDIT MODAL -->
 <div class="modal-backdrop" id="modal">
   <div class="modal">
-    <div class="modal-title">Add deployment story</div>
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Add deployment story</div>
+      <div class="modal-subtitle" id="modal-subtitle"></div>
+    </div>
     <div class="form-grid">
       <div class="form-row"><label>Your name *</label><input type="text" id="f-user" placeholder="e.g. Shibin S." /></div>
       <div class="form-row"><label>Story ID / Ticket # *</label><input type="text" id="f-id" placeholder="PROJ-1234" /></div>
       <div class="form-row"><label>Status</label>
-        <select id="f-status"><option>Pending</option><option>In Progress</option><option>Deployed</option><option>Blocked</option></select>
+        <select id="f-status">
+          <option>Pending</option>
+          <option>In Progress</option>
+          <option>Deployed</option>
+          <option>Blocked</option>
+        </select>
       </div>
-      <div class="form-row"><label>Priority *</label>
+      <div class="form-row"><label>Priority</label>
         <select id="f-priority">
-          <option value="High">🔴 High</option>
-          <option value="Medium" selected>🟡 Medium</option>
-          <option value="Low">🟢 Low</option>
+          <option value="P1">P1 — Critical</option>
+          <option value="P2">P2 — High</option>
+          <option value="P3" selected>P3 — Medium</option>
+          <option value="P4">P4 — Low</option>
+          <option value="P5">P5 — Minimal</option>
         </select>
       </div>
       <div class="form-row"><label>Target deploy date</label><input type="date" id="f-date" /></div>
@@ -275,17 +294,17 @@
       <div class="form-row full"><label>Assigned owner</label><input type="text" id="f-owner" placeholder="e.g. Ankita M." /></div>
       <div class="form-row full">
         <label>Components name</label>
-        <textarea id="f-components" rows="5" placeholder="Paste one component per line:&#10;DLPExtensionHelper&#10;InternalCommunicationHelper&#10;PPMExtensionHandler&#10;OpportunityLineItemTriggerHandler"></textarea>
-        <div class="form-hint">One component per line — paste the full list, each will become a separate tag</div>
+        <textarea id="f-components" rows="6" placeholder="One item per line. Add a blank line to create a section separator:&#10;&#10;ApexClassOne&#10;ApexClassTwo&#10;&#10;CustomMetadata__mdt&#10;AnotherMetadata__mdt&#10;&#10;TriggerHandlerClass"></textarea>
+        <div class="form-hint">One component per line &nbsp;·&nbsp; <strong>Blank line = visual section break</strong> (group Apex classes, Custom Metadata, etc.)</div>
       </div>
       <div class="form-row full">
         <label>Test class name</label>
-        <textarea id="f-testclass" rows="4" placeholder="Paste one test class per line:&#10;DLPExtensionHelperTest&#10;PPMCommunicationHelperTest&#10;OpportunityLineItemTriggerHandlerTest"></textarea>
+        <textarea id="f-testclass" rows="4" placeholder="Paste one test class per line:&#10;DLPExtensionHelperTest&#10;PPMCommunicationHelperTest"></textarea>
         <div class="form-hint">One test class per line</div>
       </div>
       <div class="form-row full">
         <label>Static constant</label>
-        <textarea id="f-static" rows="4" placeholder="Paste one constant per line:&#10;PPM_PAYMENT_CONFIRMATION&#10;PPM_INITIATION_NOTIFICATION&#10;PPM_EXTENSION_QUEUE"></textarea>
+        <textarea id="f-static" rows="4" placeholder="Paste one constant per line:&#10;PPM_PAYMENT_CONFIRMATION&#10;PPM_INITIATION_NOTIFICATION"></textarea>
         <div class="form-hint">One constant per line</div>
       </div>
       <div class="form-row full"><label>Remarks</label><input type="text" id="f-remarks" placeholder="Any additional notes or deployment instructions" /></div>
@@ -293,7 +312,7 @@
     <div class="form-err" id="form-err">Please fill in your name and Story ID.</div>
     <div class="modal-actions">
       <button class="btn" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveStory()">Save story</button>
+      <button class="btn btn-primary" id="modal-save-btn" onclick="saveStory()">Save story</button>
     </div>
   </div>
 </div>
@@ -301,59 +320,77 @@
 <div class="toast" id="toast"></div>
 
 <script>
-let stories = [], activeFilter = 'All', activePriorityFilter = 'All', apiKey = '', binId = '', saving = false;
+let stories = [], activeFilter = 'All', activePriorityFilter = 'All';
+let apiKey = '', binId = '', saving = false, editingIdx = null;
 
-const PRIORITY_ORDER = { 'High': 0, 'Medium': 1, 'Low': 2 };
+const PRIORITY_ORDER = { P1:0, P2:1, P3:2, P4:3, P5:4 };
 
 const AV_COLORS = [
   ['#dbeafe','#1d4ed8'],['#dcfce7','#15803d'],['#fef3c7','#b45309'],
   ['#ede9fe','#6d28d9'],['#fce7f3','#be185d'],['#e0f2fe','#0369a1'],
 ];
-function avStyle(n) { const i=(n||'?').charCodeAt(0)%AV_COLORS.length; return `background:${AV_COLORS[i][0]};color:${AV_COLORS[i][1]}`; }
-function initials(n) { if(!n) return '?'; return n.trim().split(/\s+/).map(w=>w[0]).join('').toUpperCase().slice(0,2); }
-function statusCls(s) { if(s==='Deployed') return 'badge-deployed'; if(s==='In Progress') return 'badge-inprogress'; if(s==='Blocked') return 'badge-blocked'; return 'badge-pending'; }
-function fmtDate(d) { if(!d) return '—'; return new Date(d+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}); }
-function toast(msg) { const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2400); }
+function avStyle(n){const i=(n||'?').charCodeAt(0)%AV_COLORS.length;return `background:${AV_COLORS[i][0]};color:${AV_COLORS[i][1]}`;}
+function initials(n){if(!n)return'?';return n.trim().split(/\s+/).map(w=>w[0]).join('').toUpperCase().slice(0,2);}
+function statusCls(s){if(s==='Deployed')return'badge-deployed';if(s==='In Progress')return'badge-inprogress';if(s==='Blocked')return'badge-blocked';return'badge-pending';}
+function fmtDate(d){if(!d)return'—';return new Date(d+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});}
+function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2400);}
 
+/* Convert textarea text to array, preserving blank lines as '---' separators */
 function toList(val) {
   if (!val) return [];
   if (Array.isArray(val)) return val;
-  return val.split(/\n/).map(s=>s.trim()).filter(Boolean);
+  const lines = val.split(/\n/).map(s => s.trim() === '' ? '---' : s.trim());
+  // strip leading/trailing separators and collapse consecutive ones
+  const clean = [];
+  for (let i = 0; i < lines.length; i++) {
+    if (lines[i] === '---') {
+      if (clean.length === 0) continue;            // leading
+      if (clean[clean.length-1] === '---') continue; // consecutive
+    }
+    clean.push(lines[i]);
+  }
+  while (clean.length && clean[clean.length-1] === '---') clean.pop(); // trailing
+  return clean;
+}
+
+/* Convert stored array back to textarea text (separators become blank lines) */
+function toListRaw(val) {
+  if (!val) return '';
+  if (!Array.isArray(val)) return val;
+  return val.map(s => s === '---' ? '' : s).join('\n');
 }
 
 function renderPills(items, cls) {
   const list = toList(items);
   if (!list.length) return '<span style="color:var(--text-faint);font-size:12px;">—</span>';
-  return `<div class="item-list">${list.map(item=>`<span class="item-pill ${cls}">${item}</span>`).join('')}</div>`;
+  const html = list.map(item =>
+    item === '---'
+      ? '<div class="item-sep"></div>'
+      : `<span class="item-pill ${cls}">${item}</span>`
+  ).join('');
+  return `<div class="item-list">${html}</div>`;
 }
 
 function prioBadge(p) {
-  if (p === 'High')   return `<span class="prio-badge prio-badge-high">🔴 High</span>`;
-  if (p === 'Low')    return `<span class="prio-badge prio-badge-low">🟢 Low</span>`;
-  return `<span class="prio-badge prio-badge-medium">🟡 Medium</span>`;
+  const map = {P1:'prio-p1',P2:'prio-p2',P3:'prio-p3',P4:'prio-p4',P5:'prio-p5'};
+  const cls = map[p] || 'prio-p3';
+  return `<span class="prio-badge ${cls}">${p||'P3'}</span>`;
 }
 
 function sortByPriority(list) {
-  return [...list].sort((a, b) => {
-    const pa = PRIORITY_ORDER[a.priority] ?? 1;
-    const pb = PRIORITY_ORDER[b.priority] ?? 1;
-    if (pa !== pb) return pa - pb;          // High first
-    return (b.ts || 0) - (a.ts || 0);      // then newest first
+  return [...list].sort((a,b) => {
+    const pa = PRIORITY_ORDER[a.priority] ?? 2;
+    const pb = PRIORITY_ORDER[b.priority] ?? 2;
+    if (pa !== pb) return pa - pb;
+    return (b.ts||0) - (a.ts||0);
   });
 }
 
 function render() {
   const q = (document.getElementById('search-input')||{}).value?.toLowerCase()||'';
-
-  // Status filter
-  let filtered = stories.filter(s => activeFilter === 'All' || s.status === activeFilter);
-
-  // Priority filter
-  if (activePriorityFilter !== 'All') {
-    filtered = filtered.filter(s => (s.priority || 'Medium') === activePriorityFilter);
-  }
-
-  // Search filter
+  let filtered = stories.filter(s => activeFilter==='All' || s.status===activeFilter);
+  if (activePriorityFilter !== 'All')
+    filtered = filtered.filter(s => (s.priority||'P3') === activePriorityFilter);
   if (q) filtered = filtered.filter(s =>
     (s.storyId||'').toLowerCase().includes(q) ||
     (s.desc||'').toLowerCase().includes(q) ||
@@ -364,51 +401,73 @@ function render() {
     toList(s.testClass).join(' ').toLowerCase().includes(q) ||
     toList(s.staticConstant).join(' ').toLowerCase().includes(q)
   );
-
-  // Always sort: High → Medium → Low, then newest first within same priority
   filtered = sortByPriority(filtered);
 
-  const tbody = document.getElementById('story-tbody');
-  document.getElementById('loading-state').style.display='none';
+  document.getElementById('loading-state').style.display = 'none';
   const empty = document.getElementById('empty-state');
-  if (!filtered.length) { tbody.innerHTML=''; empty.style.display='block'; }
-  else {
-    empty.style.display='none';
-    tbody.innerHTML = filtered.map(s => {
-      const prio = s.priority || 'Medium';
-      const rowClass = prio === 'High' ? 'prio-high-row' : '';
-      const origIdx = stories.indexOf(s);
-      return `
-      <tr class="${rowClass}">
-        <td class="col-id" style="font-family:'DM Mono',monospace;font-size:12px;font-weight:500;padding-top:12px;">${s.storyId||'—'}</td>
-        <td class="col-prio" style="padding-top:12px;">${prioBadge(prio)}</td>
-        <td class="col-desc" style="font-size:13px;color:var(--text-muted);padding-top:12px;">${s.desc||'—'}</td>
-        <td class="col-status" style="padding-top:12px;"><span class="badge ${statusCls(s.status)}">${s.status}</span></td>
-        <td class="col-date" style="font-size:12px;color:var(--text-muted);white-space:nowrap;padding-top:12px;">${fmtDate(s.date)}</td>
-        <td class="col-owner" style="padding-top:10px;"><div class="owner-cell"><span class="avatar" style="${avStyle(s.owner)}">${initials(s.owner)}</span><span style="font-size:12px;">${s.owner||'—'}</span></div></td>
-        <td class="col-comp">${renderPills(s.components,'item-pill-blue')}</td>
-        <td class="col-test">${renderPills(s.testClass,'item-pill-green')}</td>
-        <td class="col-static">${renderPills(s.staticConstant,'item-pill-amber')}</td>
-        <td class="col-addedby" style="font-size:12px;color:var(--text-faint);padding-top:12px;">${s.addedBy||'—'}</td>
-        <td class="col-remarks" style="font-size:12px;color:var(--text-muted);font-style:italic;padding-top:12px;">${s.remarks||'—'}</td>
-        <td class="col-del" style="padding-top:10px;"><button class="del-btn" onclick="deleteStory(${origIdx})" title="Delete">×</button></td>
-      </tr>`;
-    }).join('');
-  }
-  document.getElementById('s-total').textContent=stories.length;
-  document.getElementById('s-pending').textContent=stories.filter(s=>s.status==='Pending').length;
-  document.getElementById('s-inprogress').textContent=stories.filter(s=>s.status==='In Progress').length;
-  document.getElementById('s-deployed').textContent=stories.filter(s=>s.status==='Deployed').length;
+  const tbody = document.getElementById('story-tbody');
+  if (!filtered.length) { tbody.innerHTML=''; empty.style.display='block'; updateStats(); return; }
+  empty.style.display = 'none';
+
+  tbody.innerHTML = filtered.map(s => {
+    const prio = s.priority || 'P3';
+    const rowCls = prio==='P1' ? 'row-p1' : prio==='P2' ? 'row-p2' : '';
+    const origIdx = stories.indexOf(s);
+    const canDeploy = s.status === 'In Progress';
+    return `
+    <tr class="${rowCls}">
+      <td class="col-id" style="font-family:'DM Mono',monospace;font-size:12px;font-weight:500;padding-top:12px;">${s.storyId||'—'}</td>
+      <td class="col-prio" style="padding-top:11px;">${prioBadge(prio)}</td>
+      <td class="col-desc" style="font-size:13px;color:var(--text-muted);padding-top:12px;">${s.desc||'—'}</td>
+      <td class="col-status" style="padding-top:10px;">
+        <div class="status-cell">
+          <span class="badge ${statusCls(s.status)}">${s.status}</span>
+          ${canDeploy ? `<button class="btn-deploy" onclick="markDeployed(${origIdx})">&#10003; Mark Deployed</button>` : ''}
+        </div>
+      </td>
+      <td class="col-date" style="font-size:12px;color:var(--text-muted);white-space:nowrap;padding-top:12px;">${fmtDate(s.date)}</td>
+      <td class="col-owner" style="padding-top:10px;"><div class="owner-cell"><span class="avatar" style="${avStyle(s.owner)}">${initials(s.owner)}</span><span style="font-size:12px;">${s.owner||'—'}</span></div></td>
+      <td class="col-comp">${renderPills(s.components,'item-pill-blue')}</td>
+      <td class="col-test">${renderPills(s.testClass,'item-pill-green')}</td>
+      <td class="col-static">${renderPills(s.staticConstant,'item-pill-amber')}</td>
+      <td class="col-addedby" style="font-size:12px;color:var(--text-faint);padding-top:12px;">${s.addedBy||'—'}</td>
+      <td class="col-remarks" style="font-size:12px;color:var(--text-muted);font-style:italic;padding-top:12px;">${s.remarks||'—'}</td>
+      <td class="col-actions">
+        <div class="action-cell">
+          <button class="btn-edit" onclick="openEditModal(${origIdx})" title="Edit story">&#9998;</button>
+          <button class="btn-del"  onclick="deleteStory(${origIdx})" title="Delete">&#215;</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  updateStats();
 }
 
+function updateStats() {
+  document.getElementById('s-total').textContent      = stories.length;
+  document.getElementById('s-pending').textContent    = stories.filter(s=>s.status==='Pending').length;
+  document.getElementById('s-inprogress').textContent = stories.filter(s=>s.status==='In Progress').length;
+  document.getElementById('s-deployed').textContent   = stories.filter(s=>s.status==='Deployed').length;
+}
+
+/* ── Quick deploy ──────────────────────────────────────── */
+async function markDeployed(idx) {
+  if (!confirm(`Mark "${stories[idx].storyId}" as Deployed?`)) return;
+  stories[idx].status = 'Deployed';
+  render();
+  try { await saveToServer(); toast('Deployed! 🚀'); } catch(e) { toast('Save failed.'); }
+}
+
+/* ── Load / save ─────────────────────────────────────── */
 async function loadData() {
-  document.getElementById('loading-state').style.display='block';
-  document.getElementById('empty-state').style.display='none';
-  document.getElementById('story-tbody').innerHTML='';
+  document.getElementById('loading-state').style.display = 'block';
+  document.getElementById('empty-state').style.display = 'none';
+  document.getElementById('story-tbody').innerHTML = '';
   try {
-    const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`,{headers:{'X-Master-Key':apiKey}});
+    const res  = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`,{headers:{'X-Master-Key':apiKey}});
     const data = await res.json();
-    stories = (data.record&&data.record.stories)?data.record.stories:[];
+    stories = (data.record&&data.record.stories) ? data.record.stories : [];
     render();
   } catch(e) { document.getElementById('loading-state').style.display='none'; toast('Failed to load. Check your connection.'); }
 }
@@ -421,57 +480,111 @@ async function saveToServer() {
   });
 }
 
-function openModal() { document.getElementById('modal').classList.add('open'); }
+/* ── Modal helpers ────────────────────────────────────── */
+function resetForm() {
+  ['f-user','f-id','f-desc','f-owner','f-date','f-remarks','f-components','f-testclass','f-static']
+    .forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-status').value   = 'Pending';
+  document.getElementById('f-priority').value = 'P3';
+  document.getElementById('form-err').style.display = 'none';
+}
+
+function openAddModal() {
+  editingIdx = null;
+  resetForm();
+  document.getElementById('modal-title').textContent    = 'Add deployment story';
+  document.getElementById('modal-subtitle').textContent = '';
+  document.getElementById('modal-save-btn').textContent = 'Save story';
+  document.getElementById('modal').classList.add('open');
+}
+
+function openEditModal(idx) {
+  editingIdx = idx;
+  const s = stories[idx];
+  resetForm();
+  document.getElementById('f-user').value       = s.addedBy || '';
+  document.getElementById('f-id').value         = s.storyId || '';
+  document.getElementById('f-desc').value       = s.desc || '';
+  document.getElementById('f-status').value     = s.status || 'Pending';
+  document.getElementById('f-priority').value   = s.priority || 'P3';
+  document.getElementById('f-date').value       = s.date || '';
+  document.getElementById('f-owner').value      = s.owner || '';
+  document.getElementById('f-components').value = toListRaw(s.components);
+  document.getElementById('f-testclass').value  = toListRaw(s.testClass);
+  document.getElementById('f-static').value     = toListRaw(s.staticConstant);
+  document.getElementById('f-remarks').value    = s.remarks || '';
+  document.getElementById('modal-title').textContent    = 'Edit story';
+  document.getElementById('modal-subtitle').textContent = s.storyId || '';
+  document.getElementById('modal-save-btn').textContent = 'Update story';
+  document.getElementById('modal').classList.add('open');
+}
+
 function closeModal() {
   document.getElementById('modal').classList.remove('open');
-  document.getElementById('form-err').style.display='none';
-  ['f-user','f-id','f-desc','f-owner','f-date','f-components','f-testclass','f-static','f-remarks'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('f-status').value='Pending';
-  document.getElementById('f-priority').value='Medium';
+  editingIdx = null;
+  resetForm();
 }
 
+/* ── Save (add or update) ─────────────────────────────── */
 async function saveStory() {
-  const user=document.getElementById('f-user').value.trim();
-  const storyId=document.getElementById('f-id').value.trim();
-  if(!user||!storyId){document.getElementById('form-err').style.display='block';return;}
-  if(saving)return; saving=true;
-  const story={
-    storyId, desc:document.getElementById('f-desc').value.trim(),
-    status:document.getElementById('f-status').value,
-    priority:document.getElementById('f-priority').value,
-    date:document.getElementById('f-date').value,
-    owner:document.getElementById('f-owner').value.trim(),
-    components:toList(document.getElementById('f-components').value),
-    testClass:toList(document.getElementById('f-testclass').value),
-    staticConstant:toList(document.getElementById('f-static').value),
-    remarks:document.getElementById('f-remarks').value.trim(),
-    addedBy:user, ts:Date.now()
+  const user    = document.getElementById('f-user').value.trim();
+  const storyId = document.getElementById('f-id').value.trim();
+  if (!user || !storyId) { document.getElementById('form-err').style.display='block'; return; }
+  if (saving) return;
+  saving = true;
+
+  const story = {
+    storyId,
+    desc:           document.getElementById('f-desc').value.trim(),
+    status:         document.getElementById('f-status').value,
+    priority:       document.getElementById('f-priority').value,
+    date:           document.getElementById('f-date').value,
+    owner:          document.getElementById('f-owner').value.trim(),
+    components:     toList(document.getElementById('f-components').value),
+    testClass:      toList(document.getElementById('f-testclass').value),
+    staticConstant: toList(document.getElementById('f-static').value),
+    remarks:        document.getElementById('f-remarks').value.trim(),
+    addedBy:        user,
+    ts:             editingIdx !== null ? (stories[editingIdx].ts || Date.now()) : Date.now(),
   };
-  stories.unshift(story); closeModal(); render();
-  try{await saveToServer();toast('Story saved!');}catch(e){toast('Save failed. Try again.');}
-  saving=false;
+
+  if (editingIdx !== null) {
+    stories[editingIdx] = story;
+  } else {
+    stories.unshift(story);
+  }
+
+  const msg = editingIdx !== null ? 'Story updated!' : 'Story saved!';
+  closeModal();
+  render();
+  try { await saveToServer(); toast(msg); } catch(e) { toast('Save failed. Try again.'); }
+  saving = false;
 }
 
+/* ── Delete ──────────────────────────────────────────── */
 async function deleteStory(idx) {
-  if(!confirm('Delete this story?'))return;
-  stories.splice(idx,1); render();
-  try{await saveToServer();toast('Story deleted.');}catch(e){toast('Delete failed.');}
+  if (!confirm('Delete this story?')) return;
+  stories.splice(idx,1);
+  render();
+  try { await saveToServer(); toast('Story deleted.'); } catch(e) { toast('Delete failed.'); }
 }
 
+/* ── Filters ─────────────────────────────────────────── */
 function setStatusFilter(f, btn) {
   activeFilter = f;
-  document.querySelectorAll('.toolbar-row:first-child .filter-pill').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#status-filter-row .filter-pill').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   render();
 }
 
 function setPriorityFilter(f, btn) {
   activePriorityFilter = f;
-  document.querySelectorAll('.toolbar-row:last-child .filter-pill').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#priority-filter-row .filter-pill').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   render();
 }
 
+/* ── Config ──────────────────────────────────────────── */
 async function connectBin() {
   const key=document.getElementById('cfg-key').value.trim();
   const bin=document.getElementById('cfg-bin').value.trim();
@@ -479,8 +592,8 @@ async function connectBin() {
   try {
     const res=await fetch(`https://api.jsonbin.io/v3/b/${bin}/latest`,{headers:{'X-Master-Key':key}});
     if(!res.ok)throw new Error();
-    localStorage.setItem('dt_key',key); localStorage.setItem('dt_bin',bin);
-    apiKey=key; binId=bin; showApp(); loadData();
+    localStorage.setItem('dt_key',key);localStorage.setItem('dt_bin',bin);
+    apiKey=key;binId=bin;showApp();loadData();
   } catch(e){showCfgErr('Could not connect. Check your API key and Bin ID.');}
 }
 function showCfgErr(msg){const el=document.getElementById('cfg-err');el.style.display='block';el.textContent=msg;}
@@ -488,7 +601,7 @@ function showConfig(){document.getElementById('config-view').style.display='bloc
 function showApp(){document.getElementById('config-view').style.display='none';document.getElementById('app-view').style.display='block';document.getElementById('top-actions').style.display='flex';}
 
 window.addEventListener('DOMContentLoaded',()=>{
-  const k=localStorage.getItem('dt_key'), b=localStorage.getItem('dt_bin');
+  const k=localStorage.getItem('dt_key'),b=localStorage.getItem('dt_bin');
   if(k&&b){apiKey=k;binId=b;showApp();loadData();}
 });
 </script>
